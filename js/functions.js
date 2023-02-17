@@ -44,9 +44,7 @@ const getFileAddress = (string, length, extraLine) => {
   let resultString = '';
 
   for (let i = 0; i < extraLineLength; i++) {
-    if (extraLine.length === 1) {
-      resultString += extraLine;
-    } else if (extraLine.length >= extraLineLength) {
+    if (extraLine.length >= extraLineLength) {
       resultString += extraLine[i];
     } else {
       extraLine += extraLine;
