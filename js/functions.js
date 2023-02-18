@@ -41,12 +41,16 @@ findNumbers(1.5);
 
 const getFileAddress = (string, length, extraLine) => {
   const extraLineLength = length - string.length;
+  const remainder = extraLineLength % extraLine.length;
   let resultString = '';
-
-  for (let i = 0; i < extraLineLength; i++) {
-    if (extraLine.length >= extraLineLength) {
+  if (!remainder || extraLineLength <= 0) {
+    for (let i = 0; i < extraLineLength; i++) {
+      extraLine += extraLine;
       resultString += extraLine[i];
-    } else {
+    }
+  } else {
+    resultString = extraLine.slice(0, remainder);
+    for (let i = 0; i < extraLineLength - remainder; i++) {
       extraLine += extraLine;
       resultString += extraLine[i];
     }
