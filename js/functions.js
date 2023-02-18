@@ -45,13 +45,13 @@ const getFileAddress = (string, length, extraLine) => {
   let resultString = '';
   if (!remainder || extraLineLength <= 0) {
     for (let i = 0; i < extraLineLength; i++) {
-      extraLine += extraLine;
+      extraLine += extraLine[i];
       resultString += extraLine[i];
     }
   } else {
     resultString = extraLine.slice(0, remainder);
     for (let i = 0; i < extraLineLength - remainder; i++) {
-      extraLine += extraLine;
+      extraLine += extraLine[i];
       resultString += extraLine[i];
     }
   }
