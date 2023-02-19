@@ -5,18 +5,15 @@ checkStringLength('проверяемая строка', 10);
 
 const checkPalindrome = (string) => {
   string = string.toLowerCase().replaceAll(' ', '');
-  let reverseString = '';
-  for (let i = string.length - 1; i >= 0; i--) {
-    reverseString += string[i];
-  }
-  return reverseString === string;
+  const reverseString = Array.from(string).reverse().join('');
+  return string === reverseString;
 };
 checkPalindrome('топот');
 checkPalindrome('ДовОд');
 checkPalindrome('Кекс');
 checkPalindrome('Лёша на полке клопа нашёл ');
 
-const findNumbers = (string) => string.toString().match(/\d+/ig) ? `${string.toString().match(/\d+/ig)}`.replaceAll(',', '') : NaN;
+const findNumbers = (string) => string.toString().match(/\d+/ig) ? `${string.toString().match(/\d+/ig).join('')}` : NaN;
 findNumbers('2023 год');
 findNumbers('ECMAScript 2022');
 findNumbers('1 кефир, 0.5 батона');
@@ -28,20 +25,12 @@ findNumbers(1.5);
 const getFileAddress = (string, length, extraLine) => {
   const extraLineLength = length - string.length;
   const remainder = extraLineLength % extraLine.length;
-  let resultString = '';
-  if (!remainder || extraLineLength <= 0) {
-    for (let i = 0; i < extraLineLength; i++) {
-      extraLine += extraLine[i];
-      resultString += extraLine[i];
-    }
-  } else {
-    resultString = extraLine.slice(0, remainder);
-    for (let i = 0; i < extraLineLength - remainder; i++) {
-      extraLine += extraLine[i];
-      resultString += extraLine[i];
-    }
-  }
 
+  let resultString = extraLine.slice(0, remainder);
+  for (let i = 0; i < extraLineLength - remainder; i++) {
+    extraLine += extraLine[i];
+    resultString += extraLine[i];
+  }
   resultString += string;
   return resultString;
 };
@@ -51,4 +40,3 @@ getFileAddress('1', 4, '0');
 getFileAddress('q', 4, 'werty');
 getFileAddress('q', 4, 'we');
 getFileAddress('qwerty', 4, '0');
-
