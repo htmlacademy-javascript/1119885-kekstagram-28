@@ -16,21 +16,7 @@ checkPalindrome('ДовОд');
 checkPalindrome('Кекс');
 checkPalindrome('Лёша на полке клопа нашёл ');
 
-const findNumbers = (string) => {
-  if (typeof string === 'number') {
-    string += '';
-  }
-  string = string.replaceAll(' ', '');
-  let receivedNumber = '';
-  let hasNumber = false;
-  for (let i = 0; i < string.length; i++) {
-    if (!isNaN(+string[i])) {
-      hasNumber = true;
-      receivedNumber += string[i];
-    }
-  }
-  return hasNumber ? receivedNumber : NaN;
-};
+const findNumbers = (string) => string.toString().match(/\d+/ig) ? `${string.toString().match(/\d+/ig)}`.replaceAll(',', '') : NaN;
 findNumbers('2023 год');
 findNumbers('ECMAScript 2022');
 findNumbers('1 кефир, 0.5 батона');
