@@ -7,22 +7,18 @@ const checkPalindrome = (string) => {
   string = string
     .toLowerCase()
     .replaceAll(' ', '');
-  const reverseString = Array.from(string)
+  return string === string
+    .split('')
     .reverse()
     .join('');
-  return string === reverseString;
 };
 checkPalindrome('топот');
 checkPalindrome('ДовОд');
 checkPalindrome('Кекс');
 checkPalindrome('Лёша на полке клопа нашёл ');
 
-const findNumbers = (string) => string
-  .toString()
-  .match(/\d+/ig) ? string
-    .toString()
-    .match(/\d+/ig)
-    .join('') : NaN;
+const findNumbers = (string) => string.toString().match(/\d+/ig) ?
+  string.toString().match(/\d+/ig).join('') : NaN;
 
 findNumbers('2023 год');
 findNumbers('ECMAScript 2022');
@@ -35,7 +31,6 @@ findNumbers(1.5);
 const getFileAddress = (string, length, extraLine) => {
   const extraLineLength = length - string.length;
   const remainder = extraLineLength % extraLine.length;
-
   let resultString = extraLine.slice(0, remainder);
   for (let i = 0; i < extraLineLength - remainder; i++) {
     extraLine += extraLine[i];
