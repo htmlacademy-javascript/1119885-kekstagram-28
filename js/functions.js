@@ -4,8 +4,12 @@ checkStringLength('проверяемая строка', 18);
 checkStringLength('проверяемая строка', 10);
 
 const checkPalindrome = (string) => {
-  string = string.toLowerCase().replaceAll(' ', '');
-  const reverseString = Array.from(string).reverse().join('');
+  string = string
+    .toLowerCase()
+    .replaceAll(' ', '');
+  const reverseString = Array.from(string)
+    .reverse()
+    .join('');
   return string === reverseString;
 };
 checkPalindrome('топот');
@@ -13,7 +17,13 @@ checkPalindrome('ДовОд');
 checkPalindrome('Кекс');
 checkPalindrome('Лёша на полке клопа нашёл ');
 
-const findNumbers = (string) => string.toString().match(/\d+/ig) ? `${string.toString().match(/\d+/ig).join('')}` : NaN;
+const findNumbers = (string) => string
+  .toString()
+  .match(/\d+/ig) ? string
+    .toString()
+    .match(/\d+/ig)
+    .join('') : NaN;
+
 findNumbers('2023 год');
 findNumbers('ECMAScript 2022');
 findNumbers('1 кефир, 0.5 батона');
