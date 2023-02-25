@@ -26,23 +26,38 @@ const NAMES = [
   'Глеб'
 ];
 
-const IMAGE_DESCRIPTIONS_COUNT = 25;
+const IMAGES_DATA_COUNT = 25;
+const IMAGES_ID_COUNT = 25;
+const IMAGES_URL_COUNT = 25;
+const AVATARS_COUNT = 6;
 
+/**
+ * Функция для получения случайного числа из диапазона
+ * @param min левая граница диапазона
+ * @param max правая граница диапазона
+ * @returns {number} Случайное число из диапазона
+ */
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+/**
+ * Функция для получения неповторяющихся случайных чисел из диапазона
+ * @param min левая граница диапазона
+ * @param max правая граница диапазона
+ * @returns {function(): null|number} случайное неповторяющееся число из диапазона
+ */
 const getRandomNoRepeatInt = (min, max) => {
   const previousValues = [];
 
   return function () {
     let currentValue = getRandomInt(min, max);
-    if(previousValues.length >= (max - min) + 1) {
+    if (previousValues.length >= (max - min) + 1) {
       return null;
     }
-    while(previousValues.includes(currentValue)) {
+    while (previousValues.includes(currentValue)) {
       currentValue = getRandomInt(min, max);
     }
     previousValues.push(currentValue);
@@ -50,28 +65,41 @@ const getRandomNoRepeatInt = (min, max) => {
   };
 };
 
+/**
+ * Функция для получения случайного элемента в массиве
+ * @param array исходный массив
+ * @returns {*} случайный элемент исходного массива
+ */
 const getRandomArrayElement = (array) => array[getRandomInt(0, array.length)];
 
-const getRandomId = getRandomNoRepeatInt(1, 25);
+const getRandomId = getRandomNoRepeatInt(1, IMAGES_ID_COUNT);
 const getRandomCommentId = getRandomNoRepeatInt(1, 1000);
-const getRandomUrl = getRandomNoRepeatInt(1, 25);
+const getRandomUrl = getRandomNoRepeatInt(1, IMAGES_URL_COUNT);
 
-const createImageDescription = () => ({
+/**
+ * Функция для создания данных комментария
+ * @returns объект с данными комментария
+ */
+const generateComment = () => ({
+  id: getRandomCommentId(),
+  avatar: `img/avatar-${getRandomInt(1, AVATARS_COUNT)}.svg`,
+  message: getRandomArrayElement(MESSAGES),
+  name: getRandomArrayElement(NAMES)
+});
+
+/**
+ * Функция для создания данных изображения
+ * @returns Объект с данными изображения
+ */
+const generateImageData = () => ({
   id: getRandomId(),
   url: `photos/${getRandomUrl()}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomInt(15, 200),
-  comments: {
-    id: getRandomCommentId(),
-    avatar: `img/avatar-${getRandomInt(1, 6)}.svg`,
-    message: getRandomArrayElement(MESSAGES),
-    name: getRandomArrayElement(NAMES)
-  }
+  comments: Array.from({length: getRandomInt(0, 5)}, generateComment)
 });
 
-const imageDescriptions = Array.from({length: IMAGE_DESCRIPTIONS_COUNT}, createImageDescription);
+const imagesData = Array.from({length: IMAGES_DATA_COUNT}, generateImageData);
 
 // eslint-disable-next-line no-console
-console.log(imageDescriptions);
-
-
+console.log(imagesData);
