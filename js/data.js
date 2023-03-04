@@ -28,14 +28,16 @@ const NAMES = [
   'Глеб'
 ];
 
-const IMAGES_DATA_COUNT = 25;
-const IMAGES_ID_COUNT = 25;
-const IMAGES_URL_COUNT = 25;
+const ImagesCount = {
+  DATA: 25,
+  ID: 25,
+  URL: 25
+};
 const AVATARS_COUNT = 6;
 
-const getRandomId = getRandomNoRepeatInt(1, IMAGES_ID_COUNT);
+const getRandomId = getRandomNoRepeatInt(1, ImagesCount.ID);
 const getRandomCommentId = getRandomNoRepeatInt(1, 1000);
-const getRandomUrl = getRandomNoRepeatInt(1, IMAGES_URL_COUNT);
+const getRandomUrl = getRandomNoRepeatInt(1, ImagesCount.URL);
 
 /**
  * Функция для создания данных комментария
@@ -64,6 +66,6 @@ const generateImageData = () => ({
  * Создает массив из объектов с описаниями изображений
  * @returns Массив из объектов
  */
-const generateImagesData = () => Array.from({length: IMAGES_DATA_COUNT}, generateImageData);
+const generateImagesData = () => Array.from({length: ImagesCount.DATA}, generateImageData);
 
 export {generateImagesData};
