@@ -64,8 +64,9 @@ const generateImageData = () => ({
 
 /**
  * Создает массив из объектов с описаниями изображений
+ * @param {number} length Количество элементов в массиве
  * @returns Массив из объектов
  */
-const generateImagesData = () => Array.from({length: ImagesCount.DATA}, generateImageData);
+const generateImagesData = (length) => Array.from({length: length}, generateImageData);
 
-export {generateImagesData};
+export {generateImagesData, ImagesCount};
