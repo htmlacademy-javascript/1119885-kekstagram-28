@@ -1,2 +1,1 @@
-import {generateImagesData, ImagesCount} from './data.js';
-generateImagesData(ImagesCount.DATA);
+import './render-pictures.js';
