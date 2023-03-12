@@ -11,6 +11,19 @@ const getRandomInt = (min, max) => {
 };
 
 /**
+ * Функция для генерации ID изображений
+ * @returns {function(): number} Уникальное число ID
+ */
+const createIdGenerator = () => {
+  let lastGeneratedId = 0;
+
+  return () => {
+    lastGeneratedId += 1;
+    return lastGeneratedId;
+  };
+};
+
+/**
  * Функция для получения неповторяющихся случайных чисел из диапазона
  * @param min левая граница диапазона
  * @param max правая граница диапазона
@@ -39,4 +52,17 @@ const getRandomNoRepeatInt = (min, max) => {
  */
 const getRandomArrayElement = (array) => array[getRandomInt(0, array.length - 1)];
 
-export {getRandomInt, getRandomArrayElement, getRandomNoRepeatInt};
+
+/**
+ *
+ * @param tagName название тега
+ * @param className класс тега
+ * @returns {*} тег с классом;
+ */
+const createElement = (tagName, className) => {
+  const element = document.createElement(tagName);
+  element.classList.add(className);
+  return element;
+};
+
+export {getRandomInt, getRandomArrayElement, getRandomNoRepeatInt, createElement, createIdGenerator};
