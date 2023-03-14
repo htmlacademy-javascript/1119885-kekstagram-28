@@ -60,7 +60,7 @@ const generateImageData = () => ({
   url: `photos/${getRandomUrl()}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomInt(15, 200),
-  comments: Array.from({length: getRandomInt(0, 5)}, generateComment)
+  comments: Array.from({length: getRandomInt(4, 20)}, generateComment)
 });
 
 /**
@@ -70,6 +70,4 @@ const generateImageData = () => ({
  */
 const generateImagesData = (length) => Array.from({length: length}, generateImageData);
 
-const picturesData = generateImagesData(ImagesCount.DATA);
-
-export {picturesData};
+export {generateImagesData};

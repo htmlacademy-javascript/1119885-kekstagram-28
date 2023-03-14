@@ -1,5 +1,8 @@
-import {picturesData} from './data.js';
+import {generateImagesData} from './data.js';
 import {renderPictures} from './render-pictures.js';
-import './render-fullsize-picture.js';
+import {bigPictureRender} from './render-fullsize-picture.js';
 
-renderPictures(picturesData);
+const imagesData = generateImagesData(25);
+
+renderPictures(imagesData);
+bigPictureRender(imagesData);

@@ -52,7 +52,6 @@ const getRandomNoRepeatInt = (min, max) => {
  */
 const getRandomArrayElement = (array) => array[getRandomInt(0, array.length - 1)];
 
-
 /**
  *
  * @param tagName название тега
@@ -65,4 +64,6 @@ const createElement = (tagName, className) => {
   return element;
 };
 
-export {getRandomInt, getRandomArrayElement, getRandomNoRepeatInt, createElement, createIdGenerator};
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export {getRandomInt, getRandomArrayElement, getRandomNoRepeatInt, createElement, createIdGenerator, isEscapeKey};
