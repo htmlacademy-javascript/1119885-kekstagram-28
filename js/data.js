@@ -1,4 +1,4 @@
-import {getRandomInt, getRandomNoRepeatInt, getRandomArrayElement} from './utils.js';
+import {getRandomInt, getRandomNoRepeatInt, getRandomArrayElement, createIdGenerator} from './utils.js';
 
 const DESCRIPTIONS = [
   'Моя лучшая фотография',
@@ -35,7 +35,8 @@ const ImagesCount = {
 };
 const AVATARS_COUNT = 6;
 
-const getRandomId = getRandomNoRepeatInt(1, ImagesCount.ID);
+
+const getRandomId = createIdGenerator();
 const getRandomCommentId = getRandomNoRepeatInt(1, 1000);
 const getRandomUrl = getRandomNoRepeatInt(1, ImagesCount.URL);
 
@@ -59,7 +60,7 @@ const generateImageData = () => ({
   url: `photos/${getRandomUrl()}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomInt(15, 200),
-  comments: Array.from({length: getRandomInt(0, 5)}, generateComment)
+  comments: Array.from({length: getRandomInt(4, 20)}, generateComment)
 });
 
 /**
@@ -69,4 +70,4 @@ const generateImageData = () => ({
  */
 const generateImagesData = (length) => Array.from({length: length}, generateImageData);
 
-export {generateImagesData, ImagesCount};
+export {generateImagesData};
