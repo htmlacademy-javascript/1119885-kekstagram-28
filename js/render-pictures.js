@@ -14,7 +14,7 @@ const renderPictures = (picturesData) => {
     picture.querySelector('.picture__img').src = url;
     picture.querySelector('.picture__comments').textContent = comments.length;
     picture.querySelector('.picture__likes').textContent = likes;
-    picture.setAttribute('data-image-id', id);
+    picture.dataset.imageId = id;
     picturesContainerFragment.append(picture);
   });
   picturesBlock.append(picturesContainerFragment);

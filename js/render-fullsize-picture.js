@@ -1,4 +1,4 @@
-import {createElement, isEscapeKey} from './utils.js';
+import {isEscapeKey} from './utils.js';
 
 const COMMENTS_PER_LOAD = 5;
 
@@ -9,44 +9,49 @@ const body = document.querySelector('body');
 const bigPictureBlock = document.querySelector('.big-picture');
 const bigPictureImage = bigPictureBlock.querySelector('.big-picture__img img');
 const bigPictureLikes = bigPictureBlock.querySelector('.likes-count');
+const bigPictureCaption = bigPictureBlock.querySelector('.social__caption');
+const bigPictureCloseButton = bigPictureBlock.querySelector('.big-picture__cancel');
+
+const bigPictureCommentTemplate = bigPictureBlock.querySelector('.social__comment');
 const bigPictureCommentsCount = bigPictureBlock.querySelector('.comments-count');
 const bigPictureCommentsShown = bigPictureBlock.querySelector('.comments-shown');
 const bigPictureCommentsList = bigPictureBlock.querySelector('.social__comments');
-const bigPictureCaption = bigPictureBlock.querySelector('.social__caption');
-const bigPictureCloseButton = bigPictureBlock.querySelector('.big-picture__cancel');
 const bigPictureCommentsLoader = bigPictureBlock.querySelector('.comments-loader');
 const bigPictureComments = bigPictureCommentsList.children;
 
-const onDocumentKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    onCancelButtonClick();
-  }
-};
 
+/**
+ * Отрисовывает определенное количество комментариев на странице
+ * @param {array} comments Массив из комментариев
+ */
 function renderComments(comments) {
   comments.forEach(({avatar, name, message}) => {
-    const commentElement = createElement('li', 'social__comment');
-    commentElement.innerHTML = '<img class="social__picture"' +
-      ` src="${avatar}"` +
-      ` alt="${name}"` +
-      ' width="35" height="35">' +
-      `<p class="social__text">${message}</p>`;
+    const commentElement = bigPictureCommentTemplate.cloneNode(true);
+    commentElement.querySelector('.social__picture').src = avatar;
+    commentElement.querySelector('.social__picture').alt = name;
+    commentElement.querySelector('.social__text').textContent = message;
     bigPictureCommentsList.append(commentElement);
   });
 }
 
-const createCommentsLoad = (pictureData) => {
-  let lastCommentIndex = 0;
+
+/**
+ * Функция, накапливающая значение загруженных комментариев изображения
+ * @param {array} comments Данные о коментариях изображения
+ * @returns {function(): number}
+ */
+const createCommentsLoad = (comments) => {
+  let lastCommentIndex = COMMENTS_PER_LOAD;
 
   return () => {
-    if (lastCommentIndex >= pictureData.comments.length) {
+    if (lastCommentIndex >= comments.length) {
       return;
     }
 
-    renderComments(pictureData.comments.slice(lastCommentIndex, lastCommentIndex + 5));
+    renderComments(comments.slice(lastCommentIndex, lastCommentIndex + COMMENTS_PER_LOAD));
     bigPictureCommentsShown.textContent = `${bigPictureComments.length}`;
 
-    if (bigPictureComments.length >= pictureData.comments.length) {
+    if (bigPictureComments.length >= comments.length) {
       bigPictureCommentsLoader.classList.add('hidden');
     }
 
@@ -55,45 +60,69 @@ const createCommentsLoad = (pictureData) => {
   };
 };
 
-const fillBigPicture = (evt, {url, likes, comments, description}) => {
-  bigPictureImage.src = url;
-  bigPictureLikes.textContent = likes;
-  bigPictureCommentsCount.textContent = `${comments.length}`;
-  bigPictureCaption.textContent = description;
+/**
+ * Закрытие окна большого изображения на клавишу Esc
+ * @param {event} evt
+ */
+const onDocumentKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    onCancelButtonClick();
+  }
 };
 
+/**
+ * Загружает определенное количество комментариев по нажатию кнопки загрузки
+ */
+let onCommentsLoadClick = () => {
+};
+
+/**
+ * Действия, при закрытии окна большого изображения
+ */
 function onCancelButtonClick() {
   bigPictureBlock.classList.add('hidden');
   body.classList.remove('modal-open');
 
-  bigPictureCommentsList.innerHTML = '';
   bigPictureCommentsLoader.classList.remove('hidden');
 
+  bigPictureCommentsLoader.removeEventListener('click', onCommentsLoadClick);
   document.removeEventListener('keydown', onDocumentKeydown);
-  bigPictureCloseButton.removeEventListener('click', onCancelButtonClick);
 }
 
-const bigPictureRender = (imagesData) => {
+bigPictureCloseButton.addEventListener('click', onCancelButtonClick);
+
+/**
+ * Создает обработчик событий для открытия окна большого изображения
+ * @param {array} imagesData данные обо всех загруженных изображениях
+ */
+const ShowBigPictureOnClick = (imagesData) => {
   picturesBlock.addEventListener('click', (evt) => {
     const picture = evt.target.closest('.picture');
     if (picture) {
-      const pictureData = imagesData[picture.getAttribute('data-image-id') - 1];
+      const pictureData = imagesData.find((item) => item.id === +picture.dataset.imageId);
+      evt.preventDefault();
+
+      bigPictureCommentsList.innerHTML = '';
+      bigPictureImage.src = pictureData.url;
+      bigPictureLikes.textContent = pictureData.likes;
+      bigPictureCommentsCount.textContent = `${pictureData.comments.length}`;
+      bigPictureCaption.textContent = pictureData.description;
+
+      renderComments(pictureData.comments.slice(0, COMMENTS_PER_LOAD));
+      bigPictureCommentsShown.textContent = `${bigPictureComments.length}`;
+      if (bigPictureComments.length >= pictureData.comments.length) {
+        bigPictureCommentsLoader.classList.add('hidden');
+      }
 
       bigPictureBlock.classList.remove('hidden');
       body.classList.add('modal-open');
-      evt.preventDefault();
 
-      fillBigPicture(evt, pictureData);
-
-      const onCommentsLoadClick = createCommentsLoad(pictureData);
-      onCommentsLoadClick();
-
+      onCommentsLoadClick = createCommentsLoad(pictureData.comments);
       bigPictureCommentsLoader.addEventListener('click', onCommentsLoadClick);
       document.addEventListener('keydown', onDocumentKeydown);
-      bigPictureCloseButton.addEventListener('click', onCancelButtonClick);
     }
   });
 };
 
-export {bigPictureRender};
+export {ShowBigPictureOnClick};
 
