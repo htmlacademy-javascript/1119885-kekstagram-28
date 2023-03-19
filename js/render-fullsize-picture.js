@@ -10,7 +10,7 @@ const bigPictureBlock = document.querySelector('.big-picture');
 const bigPictureImage = bigPictureBlock.querySelector('.big-picture__img img');
 const bigPictureLikes = bigPictureBlock.querySelector('.likes-count');
 const bigPictureCaption = bigPictureBlock.querySelector('.social__caption');
-const bigPictureCloseButton = bigPictureBlock.querySelector('.big-picture__cancel');
+const bigPictureCancelButton = bigPictureBlock.querySelector('.big-picture__cancel');
 
 const bigPictureCommentTemplate = bigPictureBlock.querySelector('.social__comment');
 const bigPictureCommentsCount = bigPictureBlock.querySelector('.comments-count');
@@ -89,17 +89,17 @@ function onCancelButtonClick() {
   document.removeEventListener('keydown', onDocumentKeydown);
 }
 
-bigPictureCloseButton.addEventListener('click', onCancelButtonClick);
+bigPictureCancelButton.addEventListener('click', onCancelButtonClick);
 
 /**
  * Создает обработчик событий для открытия окна большого изображения
  * @param {array} imagesData данные обо всех загруженных изображениях
  */
-const ShowBigPictureOnClick = (imagesData) => {
+const addOpenHandlerForBigPicturePopup = (imagesData) => {
   picturesBlock.addEventListener('click', (evt) => {
     const picture = evt.target.closest('.picture');
     if (picture) {
-      const pictureData = imagesData.find((item) => item.id === +picture.dataset.imageId);
+      const pictureData = imagesData.find((imageData) => imageData.id === +picture.dataset.imageId);
       evt.preventDefault();
 
       bigPictureCommentsList.innerHTML = '';
@@ -124,5 +124,5 @@ const ShowBigPictureOnClick = (imagesData) => {
   });
 };
 
-export {ShowBigPictureOnClick};
+export {addOpenHandlerForBigPicturePopup};
 
