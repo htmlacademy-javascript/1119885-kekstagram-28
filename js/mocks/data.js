@@ -35,7 +35,6 @@ const ImagesCount = {
 };
 const AVATARS_COUNT = 6;
 
-
 const getRandomId = createIdGenerator();
 const getRandomCommentId = getRandomNoRepeatInt(1, 1000);
 const getRandomUrl = getRandomNoRepeatInt(1, ImagesCount.URL);
