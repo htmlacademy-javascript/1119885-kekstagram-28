@@ -5,4 +5,6 @@
  */
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export {isEscapeKey};
+const hasDuplicate = (array) => array.some((element) => array.indexOf(element) !== array.lastIndexOf(element));
+
+export {isEscapeKey, hasDuplicate};
