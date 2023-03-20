@@ -1,9 +1,12 @@
 import {hasDuplicate, isEscapeKey} from './utils.js';
 
+const imagePreviewBlock = document.querySelector('.img-upload__preview');
+const image = document.querySelector('.img-upload__preview img');
 const uploadButton = document.querySelector('#upload-file');
 const editImageForm = document.querySelector('.img-upload__overlay');
 const cancelButton = editImageForm.querySelector('.img-upload__cancel');
 const uploadForm = document.querySelector('.img-upload__form');
+const noneEffectButton = document.querySelector('#effect-none');
 
 const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
@@ -51,8 +54,6 @@ function onEditImageFormCancelButtonClick() {
   hashtagField.value = '';
   commentField.value = '';
 
-  pristine.destroy();
-
   editImageForm.classList.add('hidden');
   document.removeEventListener('keydown', onDocumentKeydown);
   body.classList.remove('modal-open');
@@ -81,7 +82,7 @@ function getHashtagErrorMessage(hashtagsString) {
       return 'Хэш-тег должен начинаться со знака "#"';
     }
 
-    if (!(hashtag.match(/[a-zа-яё0-9]{1,19}$/i))) {
+    if (!(hashtag.match(/^#[a-zа-яё0-9]{1,19}$/i))) {
       return 'Хэш-тег содержит недопустимые символы';
     }
   }
@@ -143,24 +144,30 @@ function onUploadFormButtonClick(evt) {
   }
 }
 
+pristine.addValidator(hashtagField, validateHashtag, getHashtagErrorMessage);
+pristine.addValidator(commentField, validateComment, getCommentErrorMessage);
+
 /**
  * Открытие окна редактирования изображения
  */
-function onUploadClick() {
+function onUploadChange() {
   body.classList.add('modal-open');
+  imagePreviewBlock.style.transform = '';
+  image.style.filter = '';
+  image.removeAttribute('class');
+  noneEffectButton.checked = true;
+  document.querySelector('.img-upload__effect-level').classList.add('hidden');
   editImageForm.classList.remove('hidden');
+
   document.addEventListener('keydown', onDocumentKeydown);
   uploadForm.addEventListener('submit', onUploadFormButtonClick);
-
-  pristine.addValidator(hashtagField, validateHashtag, getHashtagErrorMessage);
-  pristine.addValidator(commentField, validateComment, getCommentErrorMessage);
 }
 
 /**
  * Добавляет обработчики для открытия и закрытия формы редактирования изображений
  */
 const addOpenAndCloseHandlersForImageEditForm = () => {
-  uploadButton.addEventListener('change', onUploadClick);
+  uploadButton.addEventListener('change', onUploadChange);
   cancelButton.addEventListener('click', onEditImageFormCancelButtonClick);
 };
 
