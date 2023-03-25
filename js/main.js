@@ -1,14 +1,13 @@
-import {generateImagesData} from './mocks/data.js';
-import {renderPictures} from './render-pictures.js';
-import {addOpenHandlerForBigPicturePopup} from './render-fullsize-picture.js';
-import {addOpenAndCloseHandlersForImageEditForm} from './form.js';
-import {addImageScaleHandlers} from './scale-image.js';
-import {addEffectButtonsHandlers} from './effects.js';
-
-const imagesData = generateImagesData(25);
-
-renderPictures(imagesData);
-addOpenHandlerForBigPicturePopup(imagesData);
-addOpenAndCloseHandlersForImageEditForm();
-addImageScaleHandlers();
-addEffectButtonsHandlers();
+import {addImageEditFormHandlers} from './form.js';
+import {renderPictures, showErrorPopupOnLoading} from './render-pictures.js';
+import {addOpenHandlerForBigPicturePopup} from './big-picture.js';
+import {getData} from './api.js';
+getData()
+  .then((imagesData) => {
+    renderPictures(imagesData);
+    addOpenHandlerForBigPicturePopup(imagesData);
+    addImageEditFormHandlers();
+  })
+  .catch(() => {
+    showErrorPopupOnLoading();
+  });
