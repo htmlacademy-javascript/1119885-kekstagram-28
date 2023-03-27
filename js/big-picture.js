@@ -19,7 +19,6 @@ const bigPictureCommentsList = bigPictureBlock.querySelector('.social__comments'
 const bigPictureCommentsLoader = bigPictureBlock.querySelector('.comments-loader');
 const bigPictureComments = bigPictureCommentsList.children;
 
-
 /**
  * Отрисовывает определенное количество комментариев на странице
  * @param {array} comments Массив из комментариев
@@ -33,7 +32,6 @@ function renderComments(comments) {
     bigPictureCommentsList.append(commentElement);
   });
 }
-
 
 /**
  * Функция, накапливающая значение загруженных комментариев изображения
@@ -125,4 +123,3 @@ const addOpenHandlerForBigPicturePopup = (imagesData) => {
 };
 
 export {addOpenHandlerForBigPicturePopup};
-

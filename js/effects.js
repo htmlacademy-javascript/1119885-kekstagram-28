@@ -1,14 +1,55 @@
+const EFFECTS = [
+  {
+    name: 'original'
+  },
+  {
+    name: 'chrome',
+    style: 'grayscale',
+    min: 0,
+    max: 1,
+    step: 0.1,
+    unit: ''
+  },
+  {
+    name: 'sepia',
+    style: 'sepia',
+    min: 0,
+    max: 1,
+    step: 0.1,
+    unit: ''
+  },
+  {
+    name: 'marvin',
+    style: 'invert',
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: '%'
+  },
+  {
+    name: 'phobos',
+    style: 'blur',
+    min: 0,
+    max: 3,
+    step: 0.1,
+    unit: 'px'
+  },
+  {
+    name: 'heat',
+    style: 'brightness',
+    min: 1,
+    max: 3,
+    step: 0.1,
+    unit: ''
+  },
+];
+
 const slider = document.querySelector('.effect-level__slider');
 const image = document.querySelector('.img-upload__preview img');
 const effectValueInput = document.querySelector('.effect-level__value');
+const sliderElement = document.querySelector('.img-upload__effect-level');
 
-const noneEffectButton = document.querySelector('#effect-none');
-const chromeEffectButton = document.querySelector('#effect-chrome');
-const sepiaEffectButton = document.querySelector('#effect-sepia');
-const marvinEffectButton = document.querySelector('#effect-marvin');
-const phobosEffectButton = document.querySelector('#effect-phobos');
-const heatEffectButton = document.querySelector('#effect-heat');
-
+const effectsRadioInputs = document.querySelectorAll('.effects__radio');
 
 noUiSlider.create(slider, {
   start: 1,
@@ -30,91 +71,54 @@ noUiSlider.create(slider, {
     }
   }
 });
-const updateSliderOptions = (start = 1, rangeMin = 0, rangeMax = 1, step = 0.1) => {
+
+/**
+ * Обновляет параметры слайдера
+ * @param {number} min минимальное значение слайдера
+ * @param {number} max максимальное значение слайдера
+ * @param {number} step шаг значения слайдера
+ */
+const updateSliderOptions = (min = 0, max = 1, step = 0.1) => {
   slider.noUiSlider.updateOptions({
-    start: start,
+    start: max,
     range: {
-      'min': rangeMin,
-      'max': rangeMax
+      'min': min,
+      'max': max
     },
     step: step
   });
 };
 
-document.querySelector('.img-upload__effect-level').classList.add('hidden');
+sliderElement.classList.add('hidden');
 
-const addEffectButtonsHandlers = () => {
-  noneEffectButton.addEventListener('change', () => {
-    image.removeAttribute('class');
-    document.querySelector('.img-upload__effect-level').classList.add('hidden');
-    image.style.filter = '';
-  });
+/**
+ * Добавляет обработчики событий на радио кнопки выбора эффектов
+ * @param {array} effects Массив объектов с описаниями эффектов
+ */
+const addEffectInputsHandlers = (effects) => {
+  for (let i = 0; i < effectsRadioInputs.length; i++) {
+    const {name, style, min, max, step, unit} = effects[i];
+    if (name === 'original') {
+      effectsRadioInputs[i].addEventListener('change', () => {
+        image.removeAttribute('class');
+        sliderElement.classList.add('hidden');
+        image.style.filter = '';
+      });
+    } else {
+      effectsRadioInputs[i].addEventListener('change', () => {
+        image.removeAttribute('class');
+        image.classList.add(`effects__preview--${name}`);
+        sliderElement.classList.remove('hidden');
 
-  chromeEffectButton.addEventListener('change', () => {
-    image.removeAttribute('class');
-    image.classList.add('effects__preview--chrome');
-    document.querySelector('.img-upload__effect-level').classList.remove('hidden');
+        updateSliderOptions(min, max, step);
 
-    updateSliderOptions(1, 0, 1, 0.1);
-
-    slider.noUiSlider.on('update', () => {
-      effectValueInput.value = slider.noUiSlider.get();
-      image.style.filter = `grayscale(${effectValueInput.value})`;
-    });
-  });
-
-  sepiaEffectButton.addEventListener('change', () => {
-    image.removeAttribute('class');
-    image.classList.add('effects__preview--sepia');
-    document.querySelector('.img-upload__effect-level').classList.remove('hidden');
-
-    updateSliderOptions(1, 0, 1, 0.1);
-
-    slider.noUiSlider.on('update', () => {
-      effectValueInput.value = slider.noUiSlider.get();
-      image.style.filter = `sepia(${effectValueInput.value})`;
-    });
-  });
-
-  marvinEffectButton.addEventListener('change', () => {
-    image.removeAttribute('class');
-    image.classList.add('effects__preview--marvin');
-    document.querySelector('.img-upload__effect-level').classList.remove('hidden');
-
-    updateSliderOptions(100, 0, 100, 1);
-
-    slider.noUiSlider.on('update', () => {
-      effectValueInput.value = slider.noUiSlider.get();
-      image.style.filter = `invert(${effectValueInput.value}%)`;
-    });
-  });
-
-  phobosEffectButton.addEventListener('change', () => {
-    image.removeAttribute('class');
-    image.classList.add('effects__preview--phobos');
-    document.querySelector('.img-upload__effect-level').classList.remove('hidden');
-
-    updateSliderOptions(3, 0, 3, 0.1);
-
-    slider.noUiSlider.on('update', () => {
-      effectValueInput.value = slider.noUiSlider.get();
-      image.style.filter = `blur(${effectValueInput.value}px)`;
-    });
-  });
-
-  heatEffectButton.addEventListener('change', () => {
-    image.removeAttribute('class');
-    image.classList.add('effects__preview--heat');
-    document.querySelector('.img-upload__effect-level').classList.remove('hidden');
-
-    updateSliderOptions(3, 1, 3, 0.1);
-
-    slider.noUiSlider.on('update', () => {
-      effectValueInput.value = slider.noUiSlider.get();
-      image.style.filter = `brightness(${effectValueInput.value})`;
-    });
-  });
+        slider.noUiSlider.on('update', () => {
+          effectValueInput.value = slider.noUiSlider.get();
+          image.style.filter = `${style}(${effectValueInput.value}${unit})`;
+        });
+      });
+    }
+  }
 };
 
-
-export {addEffectButtonsHandlers};
+export {addEffectInputsHandlers, EFFECTS};

@@ -20,6 +20,15 @@ const renderPictures = (picturesData) => {
   picturesBlock.append(picturesContainerFragment);
 };
 
-export {renderPictures};
+const showErrorPopupOnLoading = () => {
+  const errorPopup = document.querySelector('.load-error');
+  errorPopup.classList.remove('hidden');
+
+  setTimeout(() => {
+    errorPopup.classList.add('hidden');
+  }, 5000);
+};
+
+export {renderPictures, showErrorPopupOnLoading};
 
 
