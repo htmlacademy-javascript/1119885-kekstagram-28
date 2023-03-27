@@ -14,9 +14,6 @@ const load = (route, method = Method.GET, body = null) =>
         throw new Error();
       }
       return response.json();
-    })
-    .catch(() => {
-      throw new Error();
     });
 const getData = () => load(Route.GET_DATA);
 const sendData = (body) => load(Route.POST_DATA, Method.POST, body);
