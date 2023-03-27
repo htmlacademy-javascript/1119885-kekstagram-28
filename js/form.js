@@ -8,6 +8,8 @@ const HASHTAG_MAX_LENGTH = 20;
 const HASHTAGS_MAX_COUNT = 5;
 const COMMENT_MAX_LENGTH = 140;
 
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+
 const uploadForm = document.querySelector('.img-upload__form');
 const editImageForm = uploadForm.querySelector('.img-upload__overlay');
 const uploadButton = uploadForm.querySelector('#upload-file');
@@ -203,12 +205,10 @@ const onUploadFormButtonClick = (evt) => {
     .then(() => {
       if (pristine.validate()) {
         uploadSuccess();
-      } else {
-        uploadError();
       }
     })
     .catch(() => {
-      showErrorPopupOnSending();
+      uploadError();
     })
     .finally(() => {
       uploadButton.disabled = false;
@@ -223,6 +223,17 @@ const onUploadChange = () => {
   image.style.filter = '';
   image.removeAttribute('class');
   noneEffectButton.checked = true;
+
+  const file = uploadButton.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((type) => fileName.endsWith(type));
+  if (matches) {
+    image.src = URL.createObjectURL(file);
+    const effectsPreviews = editImageForm.querySelectorAll('.effects__preview');
+    effectsPreviews.forEach((preview) => {
+      preview.style.backgroundImage = `url('${URL.createObjectURL(file)}')`;
+    });
+  }
 
   pristine.validate();
 

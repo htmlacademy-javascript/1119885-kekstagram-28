@@ -54,8 +54,8 @@ const effectsRadioInputs = document.querySelectorAll('.effects__radio');
 noUiSlider.create(slider, {
   start: 1,
   range: {
-    'min': 0,
-    'max': 1
+    min: 0,
+    max: 1
   },
   step: 0.1,
   connect: 'lower',
@@ -82,8 +82,8 @@ const updateSliderOptions = (min = 0, max = 1, step = 0.1) => {
   slider.noUiSlider.updateOptions({
     start: max,
     range: {
-      'min': min,
-      'max': max
+      min: min,
+      max: max
     },
     step: step
   });
@@ -96,16 +96,16 @@ sliderElement.classList.add('hidden');
  * @param {array} effects Массив объектов с описаниями эффектов
  */
 const addEffectInputsHandlers = (effects) => {
-  for (let i = 0; i < effectsRadioInputs.length; i++) {
-    const {name, style, min, max, step, unit} = effects[i];
+  effects.forEach((effect, index) => {
+    const {name, style, min, max, step, unit} = effect;
     if (name === 'original') {
-      effectsRadioInputs[i].addEventListener('change', () => {
+      effectsRadioInputs[index].addEventListener('change', () => {
         image.removeAttribute('class');
         sliderElement.classList.add('hidden');
         image.style.filter = '';
       });
     } else {
-      effectsRadioInputs[i].addEventListener('change', () => {
+      effectsRadioInputs[index].addEventListener('change', () => {
         image.removeAttribute('class');
         image.classList.add(`effects__preview--${name}`);
         sliderElement.classList.remove('hidden');
@@ -118,7 +118,7 @@ const addEffectInputsHandlers = (effects) => {
         });
       });
     }
-  }
+  });
 };
 
 export {addEffectInputsHandlers, EFFECTS};

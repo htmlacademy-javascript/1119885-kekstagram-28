@@ -14,7 +14,7 @@ const onReduceScaleButtonClick = () => {
     scaleValue = MIN_VALUE;
   }
   scaleControl.value = `${scaleValue}%`;
-  imagePreview.style.transform = `scale(${scaleValue / 100})`;
+  imagePreview.style.transform = `scale(${scaleValue / MAX_VALUE})`;
 };
 
 const onIncreaseButtonClick = () => {
@@ -24,7 +24,7 @@ const onIncreaseButtonClick = () => {
     scaleValue = MAX_VALUE;
   }
   scaleControl.value = `${scaleValue}%`;
-  imagePreview.style.transform = `scale(${scaleValue / 100})`;
+  imagePreview.style.transform = `scale(${scaleValue / MAX_VALUE})`;
 };
 
 const addImageScaleHandlers = () => {
