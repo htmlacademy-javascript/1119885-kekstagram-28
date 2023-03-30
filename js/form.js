@@ -13,6 +13,7 @@ const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const uploadForm = document.querySelector('.img-upload__form');
 const editImageForm = uploadForm.querySelector('.img-upload__overlay');
 const uploadButton = uploadForm.querySelector('#upload-file');
+const submitButton = uploadForm.querySelector('#upload-submit');
 
 const imagePreviewBlock = editImageForm.querySelector('.img-upload__preview');
 const image = imagePreviewBlock.querySelector('img');
@@ -61,6 +62,9 @@ function closeImageEditorPopup() {
   document.removeEventListener('keydown', onDocumentKeydown);
 }
 
+/**
+ * Колбек функция для закрытия окна большого изображения по клику на кнопку закрытия
+ */
 const onEditImageFormCancelButtonClick = () => {
   closeImageEditorPopup();
 };
@@ -133,6 +137,10 @@ const onEscapeButtonClickForSuccessMessages = () => {
   closeSuccessPopup();
 };
 
+/**
+ * Закрытие окна уведомления об успешной загрузке изображения при клике по любой зоне, кроме самого окна
+ * @param evt
+ */
 function onOtherAreaClickForSuccessMessages(evt) {
   if (!(evt.target.closest('.success__inner'))) {
     closeSuccessPopup();
@@ -143,13 +151,21 @@ successPopupButton.addEventListener('click', () => {
   closeSuccessPopup();
 });
 
+/**
+ * Закрывает окно уведомления об успешной загрузке
+ */
 function closeSuccessPopup() {
+  body.classList.remove('modal-open');
   body.removeChild(successPopup);
   document.removeEventListener('keydown', onEscapeButtonClickForSuccessMessages);
   document.removeEventListener('click', onOtherAreaClickForSuccessMessages);
 }
 
+/**
+ * Открывает окно уведомления об успешной загрузке
+ */
 const showSuccessPopupOnSending = () => {
+  body.classList.add('modal-open');
   body.append(successPopup);
   document.addEventListener('keydown', onEscapeButtonClickForSuccessMessages);
   document.addEventListener('click', onOtherAreaClickForSuccessMessages);
@@ -159,6 +175,10 @@ const onEscapeButtonClickForErrorMessages = () => {
   closeErrorPopup();
 };
 
+/**
+ * Закрытие окна уведомления о неуспешной загрузке изображения при клике по любой зоне, кроме самого окна
+ * @param evt
+ */
 function onOtherAreaClickForErrorMessages(evt) {
   if (!(evt.target.closest('.error__inner'))) {
     closeErrorPopup();
@@ -169,28 +189,42 @@ errorPopupButton.addEventListener('click', () => {
   closeErrorPopup();
 });
 
+/**
+ * Закрытие окна уведомления о неуспешной загрузке изображения при клике по любой зоне, кроме самого окна
+ */
 function closeErrorPopup() {
+  body.classList.remove('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
   body.removeChild(errorPopup);
   document.removeEventListener('keydown', onEscapeButtonClickForErrorMessages);
   document.removeEventListener('click', onOtherAreaClickForErrorMessages);
 }
 
+/**
+ * Открытие окна уведомления о неуспешной загрузке изображения при клике по любой зоне, кроме самого окна
+ */
 const showErrorPopupOnSending = () => {
   document.removeEventListener('keydown', onDocumentKeydown);
+  body.classList.add('modal-open');
   body.append(errorPopup);
   document.addEventListener('keydown', onEscapeButtonClickForErrorMessages);
   document.addEventListener('click', onOtherAreaClickForErrorMessages);
 };
 
+/**
+ * Закрывает окно редактирвоания изображения и показывает окно успешной загрузки изображения
+ */
 const uploadSuccess = () => {
-  uploadButton.disabled = true;
+  submitButton.disabled = true;
   closeImageEditorPopup();
   showSuccessPopupOnSending();
 };
 
+/**
+ * Показывает окно неспешной загрузки изображения
+ */
 const uploadError = () => {
-  uploadButton.disabled = true;
+  submitButton.disabled = true;
   showErrorPopupOnSending();
 };
 
@@ -198,7 +232,7 @@ const uploadError = () => {
  * Попытка отправки данных о фотографии на сервер
  * @param evt
  */
-const onUploadFormButtonClick = (evt) => {
+const onSubmitFormButtonClick = (evt) => {
   evt.preventDefault();
   const fetchBody = new FormData(evt.target);
   sendData(fetchBody)
@@ -211,14 +245,14 @@ const onUploadFormButtonClick = (evt) => {
       uploadError();
     })
     .finally(() => {
-      uploadButton.disabled = false;
+      submitButton.disabled = false;
     });
 };
 
 /**
  * Открытие окна редактирования изображения
  */
-const onUploadChange = () => {
+const onUploadButtonClick = () => {
   imagePreviewBlock.style.transform = '';
   image.style.filter = '';
   image.removeAttribute('class');
@@ -244,14 +278,14 @@ const onUploadChange = () => {
   addImageScaleHandlers();
 
   document.addEventListener('keydown', onDocumentKeydown);
-  uploadForm.addEventListener('submit', onUploadFormButtonClick);
+  uploadForm.addEventListener('submit', onSubmitFormButtonClick);
 };
 
 /**
  * Добавляет обработчики для открытия и закрытия формы редактирования изображений
  */
 const addImageEditFormHandlers = () => {
-  uploadButton.addEventListener('change', onUploadChange);
+  uploadButton.addEventListener('change', onUploadButtonClick);
   cancelButton.addEventListener('click', onEditImageFormCancelButtonClick);
   addEffectInputsHandlers(EFFECTS);
 };

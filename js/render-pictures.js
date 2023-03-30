@@ -30,17 +30,23 @@ const renderPictures = (picturesData) => {
   picturesBlock.append(picturesContainerFragment);
 };
 
+/**
+ * Показывает кнопки фильтрации изображений при успешном запросе к серверу
+ */
 const showSortButtons = () => {
   const filtersBlock = document.querySelector('.img-filters');
   filtersBlock.classList.remove('img-filters--inactive');
 };
 
+/**
+ * Показывает окно об ошибке на некоторое время, в случае неуспешного запроса к серверу
+ */
 const showErrorPopupOnLoading = () => {
-  const errorPopup = document.querySelector('.load-error');
-  errorPopup.classList.remove('hidden');
+  const errorBlock = document.querySelector('.load-error');
+  errorBlock.classList.remove('hidden');
 
   setTimeout(() => {
-    errorPopup.classList.add('hidden');
+    errorBlock.classList.add('hidden');
   }, TIME_TO_CLOSE);
 };
 

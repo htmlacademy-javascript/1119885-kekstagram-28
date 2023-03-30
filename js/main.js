@@ -1,15 +1,15 @@
 import {addImageEditFormHandlers} from './form.js';
 import {renderPictures, showErrorPopupOnLoading, showSortButtons} from './render-pictures.js';
-import {addOpenHandlerForBigPicturePopup} from './big-picture.js';
+import {addHandlersForBigPicturePopup} from './big-picture.js';
 import {getData} from './api.js';
-import {addSortButtonsHandlers} from './sort.js';
+import {addFilterButtonsHandlers} from './filter.js';
 
 getData()
   .then((imagesData) => {
     showSortButtons();
     renderPictures(imagesData);
-    addSortButtonsHandlers(imagesData);
-    addOpenHandlerForBigPicturePopup(imagesData);
+    addFilterButtonsHandlers(imagesData);
+    addHandlersForBigPicturePopup(imagesData);
     addImageEditFormHandlers();
   })
   .catch(() => {

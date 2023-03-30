@@ -2,36 +2,34 @@ import {isEscapeKey} from './utils.js';
 
 const COMMENTS_PER_LOAD = 5;
 
-const picturesBlock = document.querySelector('.pictures');
-
 const body = document.querySelector('body');
 
-const bigPictureBlock = document.querySelector('.big-picture');
-const bigPictureImage = bigPictureBlock.querySelector('.big-picture__img img');
-const bigPictureLikes = bigPictureBlock.querySelector('.likes-count');
-const bigPictureCaption = bigPictureBlock.querySelector('.social__caption');
-const bigPictureCancelButton = bigPictureBlock.querySelector('.big-picture__cancel');
+const bigPicture = document.querySelector('.big-picture');
+const image = bigPicture.querySelector('.big-picture__img img');
+const likesCount = bigPicture.querySelector('.likes-count');
+const caption = bigPicture.querySelector('.social__caption');
+const cancelButton = bigPicture.querySelector('.big-picture__cancel');
 
-const bigPictureCommentTemplate = bigPictureBlock.querySelector('.social__comment');
-const bigPictureCommentsCount = bigPictureBlock.querySelector('.comments-count');
-const bigPictureCommentsShown = bigPictureBlock.querySelector('.comments-shown');
-const bigPictureCommentsList = bigPictureBlock.querySelector('.social__comments');
-const bigPictureCommentsLoader = bigPictureBlock.querySelector('.comments-loader');
-const bigPictureComments = bigPictureCommentsList.children;
+const commentTemplate = bigPicture.querySelector('.social__comment');
+const commentsCount = bigPicture.querySelector('.comments-count');
+const commentsShown = bigPicture.querySelector('.comments-shown');
+const commentsList = bigPicture.querySelector('.social__comments');
+const commentsLoader = bigPicture.querySelector('.comments-loader');
+const commentsLoaded = commentsList.children;
 
 /**
  * Отрисовывает определенное количество комментариев на странице
  * @param {array} comments Массив из комментариев
  */
-function renderComments(comments) {
+const renderComments = (comments) => {
   comments.forEach(({avatar, name, message}) => {
-    const commentElement = bigPictureCommentTemplate.cloneNode(true);
+    const commentElement = commentTemplate.cloneNode(true);
     commentElement.querySelector('.social__picture').src = avatar;
     commentElement.querySelector('.social__picture').alt = name;
     commentElement.querySelector('.social__text').textContent = message;
-    bigPictureCommentsList.append(commentElement);
+    commentsList.append(commentElement);
   });
-}
+};
 
 /**
  * Функция, накапливающая значение загруженных комментариев изображения
@@ -47,10 +45,10 @@ const createCommentsLoad = (comments) => {
     }
 
     renderComments(comments.slice(lastCommentIndex, lastCommentIndex + COMMENTS_PER_LOAD));
-    bigPictureCommentsShown.textContent = `${bigPictureComments.length}`;
+    commentsShown.textContent = `${commentsLoaded.length}`;
 
-    if (bigPictureComments.length >= comments.length) {
-      bigPictureCommentsLoader.classList.add('hidden');
+    if (commentsLoaded.length >= comments.length) {
+      commentsLoader.classList.add('hidden');
     }
 
     lastCommentIndex += COMMENTS_PER_LOAD;
@@ -68,58 +66,55 @@ const onDocumentKeydown = (evt) => {
   }
 };
 
-/**
- * Загружает определенное количество комментариев по нажатию кнопки загрузки
- */
-let onCommentsLoadClick = () => {
-};
-
+let onCommentsLoadClick;
 /**
  * Действия, при закрытии окна большого изображения
  */
 function onCancelButtonClick() {
-  bigPictureBlock.classList.add('hidden');
+  bigPicture.classList.add('hidden');
   body.classList.remove('modal-open');
 
-  bigPictureCommentsLoader.classList.remove('hidden');
+  commentsLoader.classList.remove('hidden');
 
-  bigPictureCommentsLoader.removeEventListener('click', onCommentsLoadClick);
+  commentsLoader.removeEventListener('click', onCommentsLoadClick);
   document.removeEventListener('keydown', onDocumentKeydown);
 }
-
-bigPictureCancelButton.addEventListener('click', onCancelButtonClick);
 
 /**
  * Создает обработчик событий для открытия окна большого изображения
  * @param {array} imagesData данные обо всех загруженных изображениях
  */
-const addOpenHandlerForBigPicturePopup = (imagesData) => {
+const addHandlersForBigPicturePopup = (imagesData) => {
+  const picturesBlock = document.querySelector('.pictures');
   picturesBlock.addEventListener('click', (evt) => {
     const picture = evt.target.closest('.picture');
     if (picture) {
       const pictureData = imagesData.find((imageData) => imageData.id === +picture.dataset.imageId);
+      const {url, likes, comments} = pictureData;
       evt.preventDefault();
 
-      bigPictureCommentsList.innerHTML = '';
-      bigPictureImage.src = pictureData.url;
-      bigPictureLikes.textContent = pictureData.likes;
-      bigPictureCommentsCount.textContent = `${pictureData.comments.length}`;
-      bigPictureCaption.textContent = pictureData.description;
+      commentsList.innerHTML = '';
+      image.src = url;
+      likesCount.textContent = likes;
+      commentsCount.textContent = `${comments.length}`;
+      caption.textContent = pictureData.description;
 
-      renderComments(pictureData.comments.slice(0, COMMENTS_PER_LOAD));
-      bigPictureCommentsShown.textContent = `${bigPictureComments.length}`;
-      if (bigPictureComments.length >= pictureData.comments.length) {
-        bigPictureCommentsLoader.classList.add('hidden');
+      renderComments(comments.slice(0, COMMENTS_PER_LOAD));
+      commentsShown.textContent = `${commentsLoaded.length}`;
+      if (commentsLoaded.length >= comments.length) {
+        commentsLoader.classList.add('hidden');
       }
+      onCommentsLoadClick = createCommentsLoad(comments);
 
-      bigPictureBlock.classList.remove('hidden');
+      bigPicture.classList.remove('hidden');
       body.classList.add('modal-open');
 
-      onCommentsLoadClick = createCommentsLoad(pictureData.comments);
-      bigPictureCommentsLoader.addEventListener('click', onCommentsLoadClick);
+      commentsLoader.addEventListener('click', onCommentsLoadClick);
       document.addEventListener('keydown', onDocumentKeydown);
     }
   });
+
+  cancelButton.addEventListener('click', onCancelButtonClick);
 };
 
-export {addOpenHandlerForBigPicturePopup};
+export {addHandlersForBigPicturePopup};
