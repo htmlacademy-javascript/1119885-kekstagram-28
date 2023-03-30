@@ -1,6 +1,6 @@
 const EFFECTS = [
   {
-    name: 'original'
+    name: 'none'
   },
   {
     name: 'chrome',
@@ -47,8 +47,7 @@ const EFFECTS = [
 const slider = document.querySelector('.effect-level__slider');
 const image = document.querySelector('.img-upload__preview img');
 const effectValueInput = document.querySelector('.effect-level__value');
-const sliderElement = document.querySelector('.img-upload__effect-level');
-
+const effectLevel = document.querySelector('.img-upload__effect-level');
 const effectsRadioInputs = document.querySelectorAll('.effects__radio');
 
 noUiSlider.create(slider, {
@@ -89,26 +88,29 @@ const updateSliderOptions = (min = 0, max = 1, step = 0.1) => {
   });
 };
 
-sliderElement.classList.add('hidden');
+effectLevel.classList.add('hidden');
 
 /**
  * Добавляет обработчики событий на радио кнопки выбора эффектов
  * @param {array} effects Массив объектов с описаниями эффектов
  */
 const addEffectInputsHandlers = (effects) => {
-  effects.forEach((effect, index) => {
+  effects.forEach((effect) => {
     const {name, style, min, max, step, unit} = effect;
-    if (name === 'original') {
-      effectsRadioInputs[index].addEventListener('change', () => {
+    const effectButton = Array.from(effectsRadioInputs)
+      .find((input) => `${input.id}` === `effect-${name}`);
+
+    if (name === 'none') {
+      effectButton.addEventListener('change', () => {
         image.removeAttribute('class');
-        sliderElement.classList.add('hidden');
+        effectLevel.classList.add('hidden');
         image.style.filter = '';
       });
     } else {
-      effectsRadioInputs[index].addEventListener('change', () => {
+      effectButton.addEventListener('change', () => {
         image.removeAttribute('class');
         image.classList.add(`effects__preview--${name}`);
-        sliderElement.classList.remove('hidden');
+        effectLevel.classList.remove('hidden');
 
         updateSliderOptions(min, max, step);
 
