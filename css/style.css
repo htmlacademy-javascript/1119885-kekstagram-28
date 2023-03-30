@@ -285,6 +285,7 @@ main {
 }
 
 .load-error__content {
+  border-radius: 10px;
   text-align: center;
   padding: 40px 40px 10px;
   background-color: #3d3d3d;
