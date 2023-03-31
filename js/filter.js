@@ -1,47 +1,75 @@
-import {renderPictures} from './render-pictures.js';
 import {debounce, randomizeArray} from './utils.js';
+import {renderPictures} from './render-pictures.js';
 
 const RANDOM_PICTURES_COUNT = 10;
 const TIMEOUT_DELAY = 500;
 
 const filterButtons = document.querySelectorAll('.img-filters__button');
-const filterDefaultButton = document.querySelector('#filter-default');
-const filterDiscussedButton = document.querySelector('#filter-discussed');
-const filterRandomButton = document.querySelector('#filter-random');
 
 /**
- * Добавляет обработчик на нужную кнопку фильтрации
- * @param button кнопка, на которую добавляется обработчик
- * @param cb функция рендера изображений по новому отфильтрованному массиву данных
+ * Сортирует массив данных по количеству комментариев, от большего к меньшему
+ * @param imagesData начальный массив данных
+ * @returns отсортированный массив
  */
-const addFilterButtonHandler = (button, cb) => {
-  button.addEventListener('click', () => {
-    filterButtons.forEach((filterButton) => filterButton.classList.remove('img-filters__button--active'));
-    button.classList.add('img-filters__button--active');
-    cb();
+const filterDataDiscussed = (imagesData) => imagesData
+  .slice()
+  .sort((a, b) => b.comments.length - a.comments.length);
+
+/**
+ * Перемешивает все элементы массива в случайном порядке
+ * @param imagesData начальный массив данных
+ * @returns отсортированный массив
+ */
+const filterDataRandom = (imagesData) => imagesData
+  .slice()
+  .sort(randomizeArray);
+
+/**
+ * Очищает все изображения на странице
+ */
+const clearPictures = () => {
+  const pictures = document.querySelectorAll('.picture');
+  pictures.forEach((picture) => {
+    picture.remove();
   });
 };
 
 /**
- * Добавляет обработчики событий на все кнопки фильтрации
- * @param imagesData данные об изображениях
+ * Показывает кнопки фильтрации изображений при успешном запросе к серверу
  */
-const addFilterButtonsHandlers = (imagesData) => {
-  addFilterButtonHandler(filterDefaultButton, debounce(() => renderPictures(imagesData), TIMEOUT_DELAY));
-
-  addFilterButtonHandler(filterDiscussedButton, debounce(() => {
-    const filteredImagesData = imagesData
-      .slice()
-      .sort((a, b) => b.comments.length - a.comments.length);
-    return renderPictures(filteredImagesData);
-  }, TIMEOUT_DELAY));
-
-  addFilterButtonHandler(filterRandomButton, debounce(() => {
-    const randomizedImagesData = imagesData
-      .slice()
-      .sort(randomizeArray);
-    return renderPictures(randomizedImagesData.slice(0, RANDOM_PICTURES_COUNT));
-  }, TIMEOUT_DELAY));
+const showSortButtons = () => {
+  const filtersBlock = document.querySelector('.img-filters');
+  filtersBlock.classList.remove('img-filters--inactive');
 };
 
-export {addFilterButtonsHandlers};
+const filterImages = debounce((evt, imagesData) => {
+  if (evt.target.classList.contains('img-filters__button')) {
+    const filterId = evt.target.id;
+
+    clearPictures();
+
+    switch (filterId) {
+      case 'filter-default':
+        renderPictures(imagesData);
+        break;
+      case 'filter-random':
+        renderPictures(filterDataRandom(imagesData.slice(0, RANDOM_PICTURES_COUNT)));
+        break;
+      case 'filter-discussed':
+        renderPictures(filterDataDiscussed(imagesData));
+        break;
+    }
+  }
+}, TIMEOUT_DELAY);
+
+const addFilterHandler = (imagesData) => {
+  showSortButtons();
+  const filterBlock = document.querySelector('.img-filters__form');
+  filterBlock.addEventListener('click', (evt) => {
+    filterImages(evt, imagesData);
+    filterButtons.forEach((filterButton) => filterButton.classList.remove('img-filters__button--active'));
+    evt.target.classList.add('img-filters__button--active');
+  });
+};
+
+export {addFilterHandler};

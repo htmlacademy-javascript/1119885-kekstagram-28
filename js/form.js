@@ -234,19 +234,32 @@ const uploadError = () => {
  */
 const onSubmitFormButtonClick = (evt) => {
   evt.preventDefault();
-  const fetchBody = new FormData(evt.target);
-  sendData(fetchBody)
-    .then(() => {
-      if (pristine.validate()) {
+  if (pristine.validate()) {
+    const fetchBody = new FormData(evt.target);
+    sendData(fetchBody)
+      .then(() => {
         uploadSuccess();
-      }
-    })
-    .catch(() => {
-      uploadError();
-    })
-    .finally(() => {
-      submitButton.disabled = false;
+      })
+      .catch(() => {
+        uploadError();
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+      });
+  }
+};
+
+const showUserImagePreview = () => {
+  const file = uploadButton.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((type) => fileName.endsWith(type));
+  if (matches) {
+    image.src = URL.createObjectURL(file);
+    const effectsPreviews = editImageForm.querySelectorAll('.effects__preview');
+    effectsPreviews.forEach((preview) => {
+      preview.style.backgroundImage = `url('${URL.createObjectURL(file)}')`;
     });
+  }
 };
 
 /**
@@ -258,19 +271,9 @@ const onUploadButtonClick = () => {
   image.removeAttribute('class');
   noneEffectButton.checked = true;
 
-  const file = uploadButton.files[0];
-  const fileName = file.name.toLowerCase();
-  const matches = FILE_TYPES.some((type) => fileName.endsWith(type));
-  if (matches) {
-    image.src = URL.createObjectURL(file);
-    const effectsPreviews = editImageForm.querySelectorAll('.effects__preview');
-    effectsPreviews.forEach((preview) => {
-      preview.style.backgroundImage = `url('${URL.createObjectURL(file)}')`;
-    });
-  }
+  showUserImagePreview();
 
   pristine.validate();
-
   body.classList.add('modal-open');
   sliderElement.classList.add('hidden');
   editImageForm.classList.remove('hidden');
