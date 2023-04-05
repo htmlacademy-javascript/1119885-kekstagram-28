@@ -4,8 +4,6 @@ import {renderPictures} from './render-pictures.js';
 const RANDOM_PICTURES_COUNT = 10;
 const TIMEOUT_DELAY = 500;
 
-const filterButtons = document.querySelectorAll('.img-filters__button');
-
 /**
  * Сортирует массив данных по количеству комментариев, от большего к меньшему
  * @param imagesData начальный массив данных
@@ -64,11 +62,15 @@ const filterImages = debounce((evt, imagesData) => {
 
 const addFilterHandler = (imagesData) => {
   showSortButtons();
+
+  let lastActiveButton = document.querySelector('#filter-default');
+
   const filterBlock = document.querySelector('.img-filters__form');
   filterBlock.addEventListener('click', (evt) => {
     filterImages(evt, imagesData);
-    filterButtons.forEach((filterButton) => filterButton.classList.remove('img-filters__button--active'));
+    lastActiveButton.classList.remove('img-filters__button--active');
     evt.target.classList.add('img-filters__button--active');
+    lastActiveButton = evt.target;
   });
 };
 
