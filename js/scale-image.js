@@ -6,7 +6,7 @@ const PERCENT_VALUE = 100;
 const reduceButton = document.querySelector('.scale__control--smaller');
 const increaseButton = document.querySelector('.scale__control--bigger');
 const scaleControl = document.querySelector('.scale__control--value');
-const imagePreview = document.querySelector('.img-upload__preview');
+const image = document.querySelector('.img-upload__preview img');
 
 /**
  * Уменьшает масштаб изображения по клику на кнопку уменьшения
@@ -18,7 +18,7 @@ const onReduceScaleButtonClick = () => {
     scaleValue = MIN_VALUE;
   }
   scaleControl.value = `${scaleValue}%`;
-  imagePreview.style.transform = `scale(${scaleValue / PERCENT_VALUE})`;
+  image.style.transform = `scale(${scaleValue / PERCENT_VALUE})`;
 };
 
 /**
@@ -31,7 +31,7 @@ const onIncreaseButtonClick = () => {
     scaleValue = MAX_VALUE;
   }
   scaleControl.value = `${scaleValue}%`;
-  imagePreview.style.transform = `scale(${scaleValue / PERCENT_VALUE})`;
+  image.style.transform = `scale(${scaleValue / PERCENT_VALUE})`;
 };
 
 /**

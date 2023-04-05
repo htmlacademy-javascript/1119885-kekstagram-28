@@ -6,19 +6,11 @@ const pictureTemplate = document.querySelector('#picture')
   .querySelector('.picture');
 const picturesContainerFragment = document.createDocumentFragment();
 
-const clearPictures = (pictures) => {
-  pictures.forEach((picture) => {
-    picture.remove();
-  });
-};
-
 /**
  * Отрисовывает изображения на странице
  * @param picturesData Массив из объектов с данными изображения
  */
 const renderPictures = (picturesData) => {
-  const pictures = document.querySelectorAll('.picture');
-  clearPictures(pictures);
   picturesData.forEach(({id, url, comments, likes}) => {
     const picture = pictureTemplate.cloneNode(true);
     picture.querySelector('.picture__img').src = url;
@@ -28,14 +20,6 @@ const renderPictures = (picturesData) => {
     picturesContainerFragment.append(picture);
   });
   picturesBlock.append(picturesContainerFragment);
-};
-
-/**
- * Показывает кнопки фильтрации изображений при успешном запросе к серверу
- */
-const showSortButtons = () => {
-  const filtersBlock = document.querySelector('.img-filters');
-  filtersBlock.classList.remove('img-filters--inactive');
 };
 
 /**
@@ -50,6 +34,6 @@ const showErrorPopupOnLoading = () => {
   }, TIME_TO_CLOSE);
 };
 
-export {renderPictures, showErrorPopupOnLoading, showSortButtons};
+export {renderPictures, showErrorPopupOnLoading};
 
 
