@@ -4,22 +4,30 @@ const picturesBlock = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
-const picturesContainerFragment = document.createDocumentFragment();
+
+/**
+ * Создает изоюражение на основе данных
+ * @param data данные об изображении
+ * @returns елемент изображения
+ */
+const createPicture = (data) => {
+  const {id, url, comments, likes} = data;
+  const picture = pictureTemplate.cloneNode(true);
+  picture.querySelector('.picture__img').src = url;
+  picture.querySelector('.picture__comments').textContent = comments.length;
+  picture.querySelector('.picture__likes').textContent = likes;
+  picture.dataset.imageId = id;
+  return picture;
+};
 
 /**
  * Отрисовывает изображения на странице
  * @param picturesData Массив из объектов с данными изображения
  */
 const renderPictures = (picturesData) => {
-  picturesData.forEach(({id, url, comments, likes}) => {
-    const picture = pictureTemplate.cloneNode(true);
-    picture.querySelector('.picture__img').src = url;
-    picture.querySelector('.picture__comments').textContent = comments.length;
-    picture.querySelector('.picture__likes').textContent = likes;
-    picture.dataset.imageId = id;
-    picturesContainerFragment.append(picture);
+  picturesData.forEach((data) => {
+    picturesBlock.append(createPicture(data));
   });
-  picturesBlock.append(picturesContainerFragment);
 };
 
 /**
